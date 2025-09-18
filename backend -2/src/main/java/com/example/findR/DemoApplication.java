@@ -17,15 +17,17 @@ public class DemoApplication {
 
 		SpringApplication.run(DemoApplication.class, args);
 		System.out.println("Hello World!");
-        List<JsonNode> nodes=new ArrayList<>();
-        nodes=fieldTest.runtest();
-        List<List<String>> ans=new ArrayList<>();
-        ans= missingFields.diff(nodes);
-        for (int i=0 ;i<2 ;i++) {
-            for (String key : ans.get(i)) {
-                System.out.println(key);
-            }
-            System.out.println("next");
-        }
-	}
+
+        // testing api responses
+//        List<JsonNode> nodes=new ArrayList<>();
+//        nodes=fieldTest.runtest();
+//        List<List<String>> ans=new ArrayList<>();
+//        ans= missingFields.diff(nodes);
+//        for (List<String> an : ans) {
+//            for (String key : an) {
+//                System.out.println(key);
+//            }
+//            System.out.println("next");
+//        }
+    }
 }

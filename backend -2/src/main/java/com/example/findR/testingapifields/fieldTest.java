@@ -13,7 +13,7 @@ import java.util.List;
 public class fieldTest {
     static String prodUrl="https://c.comenity.net/api/ngac/cm/v1/clients/banter/properties";
     static String uatUrl="https://cuat.comenity.net/api/ngac/cm/v1/clients/banter/properties";
-    String sitUrl="https://csit.comenity.net/api/ngac/cm/v1/clients/banter/properties";
+    static String sitUrl="https://csit.comenity.net/api/ngac/cm/v1/clients/banter/properties";
     public static List<JsonNode> runtest() throws JsonProcessingException {
         // ========== common mapper ==========
         final ObjectMapper MAPPER = new ObjectMapper();
@@ -33,15 +33,15 @@ public class fieldTest {
                 .bodyToMono(String.class)
                 .block(); // small script: block() okay here for simple comparison flow
         JsonNode node2 = MAPPER.readTree(json2);
-//        String json3 = client.get()
-//                .uri(sitUrl)
-//                .retrieve()
-//                .bodyToMono(String.class)
-//                .block(); // small script: block() okay here for simple comparison flow
-//        JsonNode node3 = MAPPER.readTree(json3);
+        String json3 = client.get()
+                .uri(sitUrl)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block(); // small script: block() okay here for simple comparison flow
+        JsonNode node3 = MAPPER.readTree(json3);
         list.add(node1);
         list.add(node2);
-       // list.add(node3);
+        list.add(node3);
        return  list;
     }
 }
