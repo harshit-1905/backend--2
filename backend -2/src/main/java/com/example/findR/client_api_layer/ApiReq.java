@@ -1,13 +1,13 @@
 package com.example.findR.client_api_layer;
 
-import com.example.findR.entities.Response;
+import com.example.findR.entities.ApiResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 @Component
 interface apiLayer{
-    Response prodApi();
-    Response uatApi();
-    Response sitApi();
+    ApiResponse prodApi();
+    ApiResponse uatApi();
+    ApiResponse sitApi();
 }
 
 @Component
@@ -19,29 +19,29 @@ public class ApiReq implements apiLayer {
     WebClient client = WebClient.create();
 
     @Override
-    public Response prodApi() {
+    public ApiResponse prodApi() {
         return client.get()
                 .uri(prodUrl)
                 .retrieve()
-                .bodyToMono(Response.class)
+                .bodyToMono(ApiResponse.class)
                 .block();
     }
 
     @Override
-    public Response uatApi() {
+    public ApiResponse uatApi() {
         return client.get()
                 .uri(uatUrl)
                 .retrieve()
-                .bodyToMono(Response.class)
+                .bodyToMono(ApiResponse.class)
                 .block();
     }
 
     @Override
-    public Response sitApi() {
+    public ApiResponse sitApi() {
         return client.get()
                 .uri(sitUrl)
                 .retrieve()
-                .bodyToMono(Response.class)
+                .bodyToMono(ApiResponse.class)
                 .block();
     }
 }
