@@ -2,10 +2,10 @@ package com.example.findR.controller;
 
 import com.example.findR.entities.Response1;
 import com.example.findR.entities.Response2;
+import com.example.findR.entities.Response3;
 import com.example.findR.entities.Response4;
 import com.example.findR.service.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +15,7 @@ interface controller{
     Response1 getValue(List<String> key) throws NoSuchFieldException, IllegalAccessException;
     Response2 getAllValues(String key) throws NoSuchFieldException, IllegalAccessException;
     Response4 fieldWithDiffValues(List<String> key) throws NoSuchFieldException, IllegalAccessException;
-    Response4 fieldsWithSameValues(List<String> list) throws NoSuchFieldException, IllegalAccessException;
+    Response3 fieldsWithSameValues(List<String> list) throws NoSuchFieldException, IllegalAccessException;
 
 }
 @RestController
@@ -28,6 +28,8 @@ public class MainController implements controller {
     Response1 response1;
     @Autowired
     Response2 response2;
+    @Autowired
+    Response3 response3;
     @Autowired
     Response4 response4;
     @Override
@@ -65,36 +67,36 @@ public class MainController implements controller {
     @GetMapping("/diff")
     public Response4 fieldWithDiffValues(@RequestParam List<String> req) throws NoSuchFieldException, IllegalAccessException {
         System.out.println(100);
-        if(Objects.equals(req.getFirst(), "") || req.getFirst()==null)
+        if(Objects.equals(req.get(0), "") || req.get(0)==null)
         {
             response4.message="Query parameters can't be empty";
             return response4;
         }
         response4.setList(serv.diffFields(req));
-        if(response4==null || response4.getList()==null)
+        if(response4 ==null || response4.getList()==null)
         {
             response4.setMessage("No Field has same value across "+ req.toString());
             return response4;
         }
-        response4.setMessage("Total " + response4.getList().size() + " fields have same different values across "+ req.toString());
+        response4.setMessage("Total " + response4.getList().size() + " fields have different values across "+ req.toString());
         return response4;
     }
 
     @Override
     @GetMapping("/same")
-    public Response4 fieldsWithSameValues(@RequestParam List<String> req) throws IllegalAccessException {
-        if(Objects.equals(req.getFirst(), "") || req.getFirst()==null)
+    public Response3 fieldsWithSameValues(@RequestParam List<String> req) throws IllegalAccessException {
+        if(Objects.equals(req.get(0), "") || req.get(0)==null)
         {
-            response4.message="Query parameters can't be empty";
-            return response4;
+            response3.message="Query parameters can't be empty";
+            return response3;
         }
-        response4.setList(serv.sameFields(req));
-        if(response4==null || response4.getList()==null)
+        response3.setList(serv.sameFields(req));
+        if(response3 ==null || response3.getList()==null)
         {
-            response4.setMessage("No Field has same value across "+ req.toString());
-            return response4;
+            response3.setMessage("No Field has same value across "+ req.toString());
+            return response3;
         }
-        response4.setMessage("Total " + response4.getList().size() + " fields have same value across "+ req.toString());
-        return response4;
+        response3.setMessage("Total " + response3.getList().size() + " fields have same value across "+ req.toString());
+        return response3;
     }
 }

@@ -1,14 +1,7 @@
 package com.example.findR;
-
-import com.example.findR.testingapifields.fieldTest;
-import com.example.findR.testingapifields.missingFields;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class DemoApplication {

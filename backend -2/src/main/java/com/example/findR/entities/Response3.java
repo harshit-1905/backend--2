@@ -7,16 +7,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
 @Scope("prototype")
 @Getter
 @Setter
-public class Response4 {
+public class Response3 {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Map<String,Map<String,String>> list=new HashMap<>();
+    public Map<String,String> list=new HashMap<>();
 }

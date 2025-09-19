@@ -8,18 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 interface serviceLayer{
 
     Response1 findVal(String s, String s1) throws NoSuchFieldException, IllegalAccessException;
     Response2 findAllVal(String s) throws NoSuchFieldException, IllegalAccessException;
-    List<String> sameFields(List<String> list) throws IllegalAccessException;
+    Map<String,String> sameFields(List<String> list) throws IllegalAccessException;
     List<ApiResponse> multiRes(List<String> list);
-
-    List<String> diffFields(List<String> req) throws IllegalAccessException;
+    Map<String,Map<String,String>> diffFields(List<String> req) throws IllegalAccessException;
 }
 @Service
 public class AppService implements serviceLayer {
@@ -96,46 +93,62 @@ public class AppService implements serviceLayer {
         System.out.println(100);
         Response1 Uatres=this.findVal("uat",key);
         //System.out.println(21);
-       // Response1 Sitres=findVal("sit",key);
+        Response1 Sitres=findVal("sit",key);
        // System.out.println(21);
         System.out.println(Prodres.getVal());
         if(Prodres.getMessage()!=null) response2.setProduct("Doesn't Exist");
         else response2.setProduct(Prodres.getVal());
         if(Uatres.getMessage()!=null) response2.setUat("Doesn't Exist");
         else response2.setUat(Uatres.getVal());
-//        if(Sitres.getMessage()==null) response2.setProduct("Doesn't Exist");
-//        else response2.setProduct(Sitres.getVal());
+        if(Sitres.getMessage()!=null) response2.setSit("Doesn't Exist");
+        else response2.setSit(Sitres.getVal());
         return response2;
     }
 
     @Override
-    public List<String> sameFields(List<String> list) throws IllegalAccessException {
+    public Map<String,String> sameFields(List<String> list) throws IllegalAccessException {
         List<ApiResponse> res=multiRes(list);
-        List<String> ans = new ArrayList<>(List.of());
+        Map<String,String> ans = new HashMap<>();
         Field[] fields = ApiResponse.class.getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
-            Object prodVal = null;
-            Object uatVal = null;
-            Object sitVal=null;
+            System.out.println(field.getName());
+            List<Object> l1=new ArrayList<>();
+            List<ApiResponse> l2=new ArrayList<>();
             for (ApiResponse resFromApi : res)
             {
                 if(Objects.equals(resFromApi.getTitle(), "prod"))
                 {
-                    prodVal=field.get(resFromApi);
+                    l1.add(field.get(resFromApi));
+                    l2.add(resFromApi);
                 }
                 else if(Objects.equals(resFromApi.getTitle(), "uat"))
                 {
-                    uatVal=field.get(resFromApi);
+                    l1.add(field.get(resFromApi));
+                    l2.add(resFromApi);
                 }
-                else
+                else if(Objects.equals(resFromApi.getTitle(), "sit"))
                 {
-                    sitVal=field.get(resFromApi);
+                    l1.add(field.get(resFromApi));
+                    l2.add(resFromApi);
+                }
+
+            }
+            boolean check =false;
+            for (int i=0 ; i<l1.size()-1 ; i++)
+            {
+                if(l1.get(i)==null || l1.get(i+1)==null)
+                {
+                    check=true;
+                    break;
+                }
+                if(!l1.get(i).equals(l1.get(i+1)))
+                {
+                    check=true;
+                    break;
                 }
             }
-            if (!Objects.equals(prodVal, uatVal) || !Objects.equals(prodVal, sitVal)) {
-                ans.add(field.getName());
-            }
+            if(!check) ans.put(field.getName(),l1.get(0).toString());
         }
         return ans;
     }
@@ -166,32 +179,61 @@ public class AppService implements serviceLayer {
     }
 
     @Override
-    public List<String> diffFields(List<String> list) throws IllegalAccessException {
+    public Map<String,Map<String,String>> diffFields(List<String> list) throws IllegalAccessException {
         List<ApiResponse> res=multiRes(list);
-        List<String> ans = new ArrayList<>(List.of());
+        Map<String,Map<String,String>> ans = new HashMap<>();
         Field[] fields = ApiResponse.class.getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
-            Object prodVal = null;
-            Object uatVal = null;
-            Object sitVal=null;
+            System.out.println(field.getName());
+            List<Object> l1=new ArrayList<>();
+            List<ApiResponse> l2=new ArrayList<>();
             for (ApiResponse resFromApi : res)
             {
                 if(Objects.equals(resFromApi.getTitle(), "prod"))
                 {
-                    prodVal=field.get(resFromApi);
+                    l1.add(field.get(resFromApi));
+                    l2.add(resFromApi);
                 }
                 else if(Objects.equals(resFromApi.getTitle(), "uat"))
                 {
-                    uatVal=field.get(resFromApi);
+                    l1.add(field.get(resFromApi));
+                    l2.add(resFromApi);
                 }
-                else
+                else if(Objects.equals(resFromApi.getTitle(), "sit"))
                 {
-                    sitVal=field.get(resFromApi);
+                    l1.add(field.get(resFromApi));
+                    l2.add(resFromApi);
+                }
+
+            }
+            boolean check =false;
+            for (int i=0 ; i<l1.size()-1 ; i++)
+            {
+                if(l1.get(i)==null || l1.get(i+1)==null)
+                {
+                    check=true;
+                    break;
+                }
+                if(!l1.get(i).equals(l1.get(i+1)))
+                {
+                    check=true;
+                    break;
                 }
             }
-            if (Objects.equals(prodVal, uatVal) && Objects.equals(prodVal, sitVal)) {
-                ans.add(field.getName());
+            if(check)
+            {
+                Map<String,String> ans1=new HashMap<>();
+                for (ApiResponse r:l2)
+                {
+                    if(field.get(r)==null)
+                    {
+                        ans1.put(r.getTitle(),null);
+                    }
+                    else
+                    ans1.put(r.getTitle(),field.get(r).toString());
+                }
+                ans.put(field.getName(),ans1);
             }
         }
         return ans;
