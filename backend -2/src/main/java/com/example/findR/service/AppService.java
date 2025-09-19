@@ -38,7 +38,6 @@ public class AppService implements serviceLayer {
                 field.setAccessible(true); // make private field accessible
                 Object fieldValue = field.get(resFromApi);
                 // Store it in Response
-                System.out.println(200);
                 res.setVal(fieldValue.toString());
                 return res;
             }
@@ -63,7 +62,6 @@ public class AppService implements serviceLayer {
             }
             catch (Exception e)
             {
-                System.out.println(200);
                 res.setMessage("The Field '"+key+"' doesn't exist in "+ env+ " environment" );
                 return res;
             }
@@ -90,7 +88,7 @@ public class AppService implements serviceLayer {
     @Override
     public Response2 findAllVal(String key) throws NoSuchFieldException, IllegalAccessException {
         Response1 Prodres=this.findVal("prod",key);
-        System.out.println(100);
+        //System.out.println(100);
         Response1 Uatres=this.findVal("uat",key);
         //System.out.println(21);
         Response1 Sitres=findVal("sit",key);
@@ -112,7 +110,7 @@ public class AppService implements serviceLayer {
         Field[] fields = ApiResponse.class.getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
-            System.out.println(field.getName());
+          //  System.out.println(field.getName());
             List<Object> l1=new ArrayList<>();
             for (ApiResponse resFromApi : res)
             {
@@ -152,7 +150,7 @@ public class AppService implements serviceLayer {
             {
                 if(l1.get(0) == null)
                 {
-                    System.out.println(1000);
+                   // System.out.println(1000);
 
                     ans.put(field.getName(),null);
                 }
