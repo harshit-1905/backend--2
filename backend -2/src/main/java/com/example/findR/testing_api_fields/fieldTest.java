@@ -1,4 +1,4 @@
-package com.example.findR.testingapifields;
+package com.example.findR.testing_api_fields;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

@@ -67,9 +67,14 @@ public class MainController implements controller {
     @GetMapping("/diff")
     public Response4 fieldWithDiffValues(@RequestParam List<String> req) throws NoSuchFieldException, IllegalAccessException {
         System.out.println(100);
-        if(Objects.equals(req.get(0), "") || req.get(0)==null)
+        if(req.get(0)==null || Objects.equals(req.get(0), "") )
         {
             response4.message="Query parameters can't be empty";
+            return response4;
+        }
+        if(req.size()==1)
+        {
+            response4.message="Can't compare , has to enter more than 1 environments";
             return response4;
         }
         response4.setList(serv.diffFields(req));

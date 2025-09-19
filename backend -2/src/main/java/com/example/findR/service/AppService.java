@@ -12,8 +12,8 @@ import java.util.*;
 
 interface serviceLayer{
 
-    Response1 findVal(String s, String s1) throws NoSuchFieldException, IllegalAccessException;
-    Response2 findAllVal(String s) throws NoSuchFieldException, IllegalAccessException;
+    Response1 findVal(String env, String key) throws NoSuchFieldException, IllegalAccessException;
+    Response2 findAllVal(String key) throws NoSuchFieldException, IllegalAccessException;
     Map<String,String> sameFields(List<String> list) throws IllegalAccessException;
     List<ApiResponse> multiRes(List<String> list);
     Map<String,Map<String,String>> diffFields(List<String> req) throws IllegalAccessException;
@@ -114,41 +114,50 @@ public class AppService implements serviceLayer {
             field.setAccessible(true);
             System.out.println(field.getName());
             List<Object> l1=new ArrayList<>();
-            List<ApiResponse> l2=new ArrayList<>();
             for (ApiResponse resFromApi : res)
             {
                 if(Objects.equals(resFromApi.getTitle(), "prod"))
                 {
                     l1.add(field.get(resFromApi));
-                    l2.add(resFromApi);
                 }
                 else if(Objects.equals(resFromApi.getTitle(), "uat"))
                 {
                     l1.add(field.get(resFromApi));
-                    l2.add(resFromApi);
                 }
                 else if(Objects.equals(resFromApi.getTitle(), "sit"))
                 {
                     l1.add(field.get(resFromApi));
-                    l2.add(resFromApi);
                 }
 
             }
             boolean check =false;
             for (int i=0 ; i<l1.size()-1 ; i++)
             {
-                if(l1.get(i)==null || l1.get(i+1)==null)
+                if(l1.get(i)==null && l1.get(i+1)==null)
+                {
+                    continue;
+                }
+                else if(l1.get(i)==null || l1.get(i+1)==null)
                 {
                     check=true;
                     break;
                 }
-                if(!l1.get(i).equals(l1.get(i+1)))
+                else if(!l1.get(i).equals(l1.get(i+1)))
                 {
                     check=true;
                     break;
                 }
             }
-            if(!check) ans.put(field.getName(),l1.get(0).toString());
+            if(!check)
+            {
+                if(l1.get(0) == null)
+                {
+                    System.out.println(1000);
+
+                    ans.put(field.getName(),null);
+                }
+                else ans.put(field.getName(),l1.get(0).toString());
+            }
         }
         return ans;
     }
@@ -210,12 +219,16 @@ public class AppService implements serviceLayer {
             boolean check =false;
             for (int i=0 ; i<l1.size()-1 ; i++)
             {
-                if(l1.get(i)==null || l1.get(i+1)==null)
+                if(l1.get(i)==null && l1.get(i+1)==null)
+                {
+                    continue;
+                }
+                else if(l1.get(i)==null || l1.get(i+1)==null)
                 {
                     check=true;
                     break;
                 }
-                if(!l1.get(i).equals(l1.get(i+1)))
+                else if(!l1.get(i).equals(l1.get(i+1)))
                 {
                     check=true;
                     break;
