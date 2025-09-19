@@ -31,7 +31,6 @@ public class AppService implements serviceLayer {
         Response1 res = new Response1();
         if(Objects.equals(env, "prod"))
         {
-
             ApiResponse resFromApi=apiReq.prodApi();
             try {
                 Field field = ApiResponse.class.getDeclaredField(key);
@@ -42,7 +41,12 @@ public class AppService implements serviceLayer {
                 return res;
             }
             catch (Exception e) {
-                res.setMessage("The Field '"+key+"' doesn't exist in "+ env+ " environment" );
+                System.out.println(key);
+                if(key=="null")
+                {
+                    res.setMessage("Field cannot be null" );
+                }
+                else res.setMessage("The Field '"+key+"' doesn't exist in "+ env+ " environment" );
                 return res;
             }
         }
@@ -105,8 +109,13 @@ public class AppService implements serviceLayer {
 
     @Override
     public Map<String,String> sameFields(List<String> list) throws IllegalAccessException {
-        List<ApiResponse> res=multiRes(list);
         Map<String,String> ans = new HashMap<>();
+        if (list == null || list.isEmpty()) {
+            ans.put("Message","No keys provided");
+            return ans;
+        }
+        List<ApiResponse> res=multiRes(list);
+
         Field[] fields = ApiResponse.class.getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);

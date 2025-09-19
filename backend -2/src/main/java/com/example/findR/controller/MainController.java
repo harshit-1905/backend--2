@@ -36,9 +36,9 @@ public class MainController implements controller {
     @GetMapping
     public Response1 getValue(@RequestParam List<String> req) throws NoSuchFieldException, IllegalAccessException {
         // Example: /search?ids=a&ids=b&ids=
-        if(req.get(0)==null || req.get(1)==null || Objects.equals(req.get(0), "") || Objects.equals(req.get(1), ""))
+        if(req.get(0)=="null" || req.get(1)=="null" || Objects.equals(req.get(0), "") || Objects.equals(req.get(1), ""))
         {
-            response1.message="Query parameters can't be empty";
+            response1.message="Query parameters can't be empty or null";
             return response1;
         }
         Response1 res=serv.findVal(req.get(0),req.get(1));
@@ -66,11 +66,16 @@ public class MainController implements controller {
     @Override
     @GetMapping("/diff")
     public Response4 fieldWithDiffValues(@RequestParam List<String> req) throws NoSuchFieldException, IllegalAccessException {
-        System.out.println(100);
-        if(req.get(0)==null || Objects.equals(req.get(0), "") )
+        if(req.isEmpty() || req==null)
         {
-            response4.message="Query parameters can't be empty";
+            response4.setMessage("Query parameters can't be empty or null");
             return response4;
+        }
+        for (String key : req) {
+            if (key == null || key.isBlank() || "null".equalsIgnoreCase(key)) {
+                response4.setMessage("Query parameters can't be empty or null");
+                return response4;
+            }
         }
         if(req.size()==1)
         {
@@ -89,13 +94,26 @@ public class MainController implements controller {
 
     @Override
     @GetMapping("/same")
-    public Response3 fieldsWithSameValues(@RequestParam List<String> req) throws IllegalAccessException {
-        if(Objects.equals(req.get(0), "") || req.get(0)==null)
+    public Response3 fieldsWithSameValues(@RequestParam(required = false) List<String> req) throws IllegalAccessException {
+        if(req.isEmpty() || req==null)
         {
-            response3.message="Query parameters can't be empty";
+            response3.setMessage("Query parameters can't be empty or null");
             return response3;
         }
+        for (String key : req) {
+            if (key == null || key.isBlank() || "null".equalsIgnoreCase(key)) {
+                response3.setMessage("Query parameters can't be empty or null");
+                return response3;
+            }
+        }
+
         response3.setList(serv.sameFields(req));
+        if(req.size()==1)
+        {
+            response3.message="Can't compare , has to enter more than 1 environments";
+            response3.setList(null);
+            return response3;
+        }
         if(response3 ==null || response3.getList()==null)
         {
             response3.setMessage("No Field has same value across "+ req.toString());
